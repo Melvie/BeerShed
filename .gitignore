@@ -1,0 +1,15 @@
+
+venv
+README.md
+*.pyc
+*.db
+.DS_store
+blog
+#*.#
+coverage
+*~
+
+
+
+
+
