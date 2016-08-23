@@ -29,6 +29,7 @@ class TestUser(BaseTestCase):
         self.assertFalse(bcrypt.check_password_hash(user.password, 'foobar'))
 
 
+
 class GuestTests(BaseTestCase):
 
     # Ensure that the login page loads correctly
@@ -41,11 +42,11 @@ class GuestTests(BaseTestCase):
         with self.client:
             response = self.client.post(
                 '/login',
-                data=dict(username="admin", password="admin"),
+                data=dict(username="guest", password="guest"),
                 follow_redirects=True
             )
             self.assertIn(b'You were logged in', response.data)
-            self.assertTrue(current_user.name == "admin")
+            self.assertTrue(current_user.name == "guest")
             self.assertTrue(current_user.is_active)
 
     # Ensure login behaves correctly with incorrect credentials
@@ -62,7 +63,7 @@ class GuestTests(BaseTestCase):
         with self.client:
             self.client.post(
                 '/login',
-                data=dict(username="admin", password="admin"),
+                data=dict(username="guest", password="guest"),
                 follow_redirects=True
             )
             response = self.client.get('/logout', follow_redirects=True)
@@ -78,13 +79,24 @@ class GuestTests(BaseTestCase):
         with self.client:
             self.client.post(
                 '/login',
-                data=dict(username="admin", password="admin"),
+                data=dict(username="guest", password="guest"),
                 follow_redirects=True
             )
             response = self.client.get('/guest', follow_redirects=True)
             self.assertIn(b'Welcome Guest!', response.data)
+            response = self.client.get('/', follow_redirects=True)
+            self.assertEqual(response.status_code, 403)
 
-
+class AdminTests(BaseTestCase):
+    def test_full_access(self):
+        with self.client:
+            self.client.post('/login',
+                             data=dict(username='admin', password='admin'),
+                             follow_redirects=True)
+            response = self.client.get('/', follow_redirects=True)
+            self.assertIn(b'You are an admin', response.data)
+            response = self.client.get('/guest', follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
 
 if __name__ == '__main__':
     unittest.main()

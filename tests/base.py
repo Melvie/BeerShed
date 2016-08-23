@@ -1,8 +1,7 @@
 from flask_testing import TestCase
-
+from flask_principal import Principal
 from project import app, db
 from project.models import User, CarboyStates
-
 
 class BaseTestCase(TestCase):
     """A base test case."""
@@ -13,7 +12,8 @@ class BaseTestCase(TestCase):
 
     def setUp(self):
         db.create_all()
-        db.session.add(User("admin", "ad@min.com", "admin", 'guest'))
+        db.session.add(User("admin", "ad@min.com", "admin", 'admin'))
+        db.session.add(User("guest", 'guest@guest.com', 'guest', 'guest'))
         db.session.commit()
 
     def tearDown(self):

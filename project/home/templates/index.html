@@ -1,18 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Welcome to BeerShed!</h1>
-<p> You are an admin, go nuts </p>
-<br>
-<p>Click <a href="/logout">here</a> to logout.</p>
+<div class="container">
+  <div class="jumbotron">
+    <h1>BeerShed </h1>
+  </div>
+</div>
 
-<!-- All posts -->
-<h3>Brews:</h3>
-{% for info in info %}
-  <strong>Carboy:</strong> {{ info.carboy }} <br>
-  <strong>Status:</strong> {{ info.status }} <br>
-  <strong>Temperature:</strong> {{ info.temperature }} <br>
-<br>
-{% endfor %}
 
+
+
+     <!-- All posts -->
+     
+     <h2 class = "sub-header"> Brew Status:</h2>
+     {% for info in info %}
+     <table class = "table">
+        <thead>
+          <tr>
+            <th class="col-md-3"> Carboy {{info.carboy}}   </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td> Status: </td>
+            <td>{{info.status}}</td>
+          </tr>
+           <tr>
+            <td> Brew Date: </td>
+            <td> TBD </td>
+           </tr>
+          <tr>
+            <td> Temperature: </td>
+            <td>{{info.temperature}}</td>
+          </tr>
+        </tbody>
+     </table>
+
+
+     {% endfor %}
+
+<div>   <p >Click <a href="/logout">here</a> to logout.</p> </div>
 {% endblock %}

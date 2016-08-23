@@ -6,12 +6,12 @@
     <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
   </head>
   <body>
-
     <div class="container">
 
       <!-- child template -->
       {% block content %}{% endblock %}
-
+    </div>
+    <footer class = "container">
       <!-- errors -->
       {% if error %}
         <p class="error"><strong>Error:</strong> {{ error }}</p>
@@ -21,7 +21,7 @@
       {% for message in get_flashed_messages() %}
         {{ message }}
       {% endfor %}
-    </div>
+    </footer>
 
   </body>
 </html>

@@ -6,7 +6,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
-from flask_principal import Principal, Permission, RoleNeed,identity_loaded, Identity, identity_changed
+from flask_principal import Principal
 import os
 
 
@@ -24,6 +24,9 @@ login_manager.init_app(app)
 app.config.from_object(os.environ['APP_SETTINGS'])
 
 db = SQLAlchemy(app)
+
+principals = Principal(app)
+principals._init_app(app)
 
 from project.users.views import users_blueprint
 from project.home.views import home_blueprint
