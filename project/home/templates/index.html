@@ -1,43 +1,97 @@
 {% extends "base.html" %}
 {% block content %}
-
-<div class="container">
-  <div class="jumbotron">
-    <h1>BeerShed </h1>
-  </div>
+<div class="jumbotron">
+  <h1>BeerShed </h1>
 </div>
 
+<!-- All posts -->
+<div class ="row">
+  <h2 class = "sub-header">  Brew Status:</h2>
+ {% for info in info %}
+ <div class ="col-md-4">
+   <table class = "table">
+     <thead>
+       <tr>
+         <th class="col-md-6">Carboy {{info.carboy}}   </th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td> Status:      </td>
+         <td>{{info.status}}</td>
+       </tr>
+       <tr>
+         <td> Brew Date:      </td>
+         <td> TBD </td>
+       </tr>
+       <tr>
+         <td> Temperature:       </td>
+         <td>{{info.temperature}}</td>
+       </tr>
+       <tr>
+         <td> Fermentation Cycle:      </td>
+         <td> Primary/Secondary </td>
+       </tr>
+       <tr>
+         <td> Time Remaining:       </td>
+         <td> Running timer </td>
+       </tr>
+     </tbody>
+   </table>
+ </div>
+  {% endfor %}
+</div>
 
+ <div class ="row">
+   <div class = "col-md-4 text-center">
+     <h3 class = "sub-header"></h3>
+     <div class="btn-group">
+       <button type="button" class="btn btn-primary">Brew</button>
+       <button type="button" class="btn btn-primary">Transfer</button>
+       <button type="button" class="btn btn-primary">Bottle</button>
+       <button type="button" class="btn btn-primary">Clean</button>
+     </div>
+   </div>
+   <div class = "col-md-4 text-center">
+    <h3 class = "sub-header"> </h3>
+     <div class="btn-group">
+       <button type="button" class="btn btn-primary">Brew</button>
+       <button type="button" class="btn btn-primary">Transfer</button>
+       <button type="button" class="btn btn-primary">Bottle</button>
+       <button type="button" class="btn btn-primary">Clean</button>
+     </div>
+   </div>
+   <div class = "col-md-4 text-center">
+     <h3 class = "sub-header"></h3>
+     <div class="btn-group">
+       <button type="button" class="btn btn-primary">Brew</button>
+       <button type="button" class="btn btn-primary">Transfer</button>
+       <button type="button" class="btn btn-primary">Bottle</button>
+       <button type="button" class="btn btn-primary">Clean</button>
+     </div>
+   </div>
+ </div>
+ <div class = "row">
+   <h1></h1>
+ </div>
 
+ <div class = "row text-center">
+   <h1></h1>
+   <div class = "btn-group">
+     <input type="button" class = "btn btn-success" value = "Execute">
+     <input type="button" class = "btn btn-danger" value = "Abort">
+   </div>
+ </div>
+ <div class = "row text-center">
+   Count down till execution -> time to abort if required
+ </div>
+ <div class = "row text-center">
+   <h1></h1>
+      <p >Click <a href="/logout">here</a> to logout.</p>
+</div>
 
-     <!-- All posts -->
-     
-     <h2 class = "sub-header"> Brew Status:</h2>
-     {% for info in info %}
-     <table class = "table">
-        <thead>
-          <tr>
-            <th class="col-md-3"> Carboy {{info.carboy}}   </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td> Status: </td>
-            <td>{{info.status}}</td>
-          </tr>
-           <tr>
-            <td> Brew Date: </td>
-            <td> TBD </td>
-           </tr>
-          <tr>
-            <td> Temperature: </td>
-            <td>{{info.temperature}}</td>
-          </tr>
-        </tbody>
-     </table>
-
-
-     {% endfor %}
-
-<div>   <p >Click <a href="/logout">here</a> to logout.</p> </div>
 {% endblock %}
+
+
+ TODO: add javascript for buttons maybe user angular?
+
