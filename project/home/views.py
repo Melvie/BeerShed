@@ -3,7 +3,7 @@
 #### imports ####
 #################
 
-from project import db, app #pragma: no cover
+from project import db, app, socketio #pragma: no cover
 from project.models import CarboyStates #pragma: no cover
 from flask import flash, redirect, url_for, render_template, Blueprint, request #pragma: no cover
 from forms import MessageForm #pragma: no cover
@@ -25,7 +25,7 @@ home_blueprint = Blueprint(
 ################
 #### routes ####
 ################
-print admin_permission
+#print admin_permission
 @home_blueprint.route('/', methods=['GET', 'POST'])
 @login_required
 @admin_permission.require(http_exception=403)
@@ -44,6 +44,8 @@ def home():
        # return redirect(url_for('home.home'))
 
     info = db.session.query(CarboyStates).all()
+    
+
     return render_template(
             'index.html', info=info, form=form, error=error)
 
@@ -69,4 +71,12 @@ def on_identity_loaded(sender, identity):
 
         if hasattr(current_user, 'role'):
             identity.provides.add(RoleNeed(current_user.role))
+
+@socketio.on('my event')
+#@admin_permission.require
+def handle_params(json):
+    print "recieved this mesS: {}".format(str(json))
+
+
+  
 

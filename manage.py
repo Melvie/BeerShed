@@ -11,7 +11,6 @@ migrate = Migrate(app, db)
 manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)
-
 @manager.command
 def test():
     """Runs the test without coverage."""
@@ -34,6 +33,13 @@ def cov():
     covdir = os.path.join(basedir, 'coverage')
     cov.html_report(directory=covdir)
     cov.erase()
+
+@manager.command
+def run():
+    socketio.run(flask.current_app,
+                 host='127.0.0.1',
+                 port=5000,
+                 user_reloader=False)
 
 if __name__ == '__main__':
     manager.run()

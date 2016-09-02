@@ -5,12 +5,10 @@
 from flask import flash, redirect, render_template, request, \
     url_for, Blueprint, current_app, session #pragma: no cover
 from forms import LoginForm #pragma: no cover
-from project import db, app #pragma: no cover
+from project import db, app#pragma: no cover
 from project.models import User, bcrypt#pragma: no cover
 from flask_login import login_user, login_required, logout_user, current_user #pragma: no cover
 from flask_principal import Principal, Permission, RoleNeed, identity_loaded, Identity, identity_changed, UserNeed, AnonymousIdentity
-
-
 
 ################
 #### config ####

@@ -98,7 +98,13 @@
    </div>
  </div>
 
-<script type= "text/javascript" charset "utf-8">
+ <script type= "text/javascript" charset "utf-8">
+   var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+   socket.on('connect', function() {
+   /socket.emit('my event', {data: 'I\'m connected!'});
+    });
+
 var timeLeft = 30
 var timer = document.getElementsByName("Timer")[0];
 var timeId
@@ -106,9 +112,12 @@ var timeId
 document.getElementsByName("Timer")[0].style.display="none"
 function countdown(){
     var secondsSpan = timer.querySelector('.seconds');
-    if(timeLeft==0){
+   if (timeLeft==0){
+        document.getElementsByName("Timer")[0].style.display="none"
         clearTimeout(timeId);
         timeLeft=30;
+        socket.emit('my event', {data:'Im using sockets!'});
+//Do a thing here
     }else{
         secondsSpan.innerHTML=timeLeft
         timeLeft--;
@@ -149,7 +158,7 @@ addEventListener("DOMContentLoaded", function() {
 
         else{
             button.addEventListener("click", function(e) {
-                // When a click happens, stop the button
+                // remove emerge stop from this group
                 // from submitting our form (if we have one
                 e.preventDefault();
                 var clickedButton = e.target;
