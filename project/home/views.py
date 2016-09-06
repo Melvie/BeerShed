@@ -7,7 +7,7 @@ from project import db, app, socketio #pragma: no cover
 from project.models import CarboyStates #pragma: no cover
 from flask import flash, redirect, url_for, render_template, Blueprint, request #pragma: no cover
 from forms import MessageForm #pragma: no cover
-from functools import wraps #pragma: no cover 
+from functools import wraps #pragma: no cover
 from flask_login import login_required, current_user #pragma: no cover
 from flask_principal import Permission, RoleNeed, Principal,identity_loaded, Identity, UserNeed
 ################
@@ -44,7 +44,7 @@ def home():
        # return redirect(url_for('home.home'))
 
     info = db.session.query(CarboyStates).all()
-    
+
 
     return render_template(
             'index.html', info=info, form=form, error=error)
@@ -73,10 +73,6 @@ def on_identity_loaded(sender, identity):
             identity.provides.add(RoleNeed(current_user.role))
 
 @socketio.on('my event')
-#@admin_permission.require
+@admin_permission.require
 def handle_params(json):
     print "recieved this mesS: {}".format(str(json))
-
-
-  
-

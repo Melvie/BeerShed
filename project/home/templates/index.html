@@ -10,7 +10,7 @@
     <h2 class = "sub-header">  Brew Status:</h2>
   </div>
   <div class = "col-md-5">
-    <button type="button" class="btn btn-danger btn-lg text-center" name="emerg"> Emergency Stop </button> 
+    <button type="button" class="btn btn-danger btn-lg text-center" name="emerg"> Emergency Stop </button>
   </div>
   <div class ="col-md-7">
     <p class ="text-right"> Shed Temperature:</p>
@@ -85,7 +85,7 @@
  </div>
 
  <div class = "row text-center">
-   
+
    <div id="inputbutts" class = "btn-group">
      <h1></h1>
      <button type="button" class="btn btn-success disabled" value="Execute" name="execute">Execute</button>
@@ -98,80 +98,80 @@
    </div>
  </div>
 
- <script type= "text/javascript" charset "utf-8">
+<script type= "text/javascript" charset "utf-8">
    var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-   socket.on('connect', function() {
-   /socket.emit('my event', {data: 'I\'m connected!'});
+   // socket.on('connect', function() {
+   // /socket.emit('my event', {data: 'I\'m connected!'});
+   //  });
+
+    var timeLeft = 30
+    var timer = document.getElementsByName("Timer")[0];
+    var timeId
+
+    document.getElementsByName("Timer")[0].style.display="none"
+    function countdown(){
+        var secondsSpan = timer.querySelector('.seconds');
+       if (timeLeft==0){
+            document.getElementsByName("Timer")[0].style.display="none"
+            clearTimeout(timeId);
+            timeLeft=30;
+            socket.emit('my event', {data:'Im using sockets!'});
+    //Do a thing here
+        }else{
+            secondsSpan.innerHTML=timeLeft
+            timeLeft--;
+
+        }
+    }
+
+    // Only run what comes next *after* the page has loaded
+    addEventListener("DOMContentLoaded", function() {
+        var commandButtons = document.querySelectorAll("button");
+
+        for (var i=0, l=commandButtons.length; i<l; i++) {
+            var button = commandButtons[i];
+            // For each button, listen for the "click" event
+
+            if (button.name=="execute"){
+                //console.log(button)
+                button.addEventListener("click",function(e){
+                    clearTimeout(timeId);
+                    timeLeft=30;
+                    button.className="btn btn-success disabled"
+                    document.getElementsByName("execute")[0].className="btn btn-success disabled"
+                    document.getElementsByName("abort")[0].className="btn btn-danger active"
+                    document.getElementsByName("Timer")[0].style.display="inline"
+                    timeId=setInterval(countdown, 1000);
+                });
+            }
+            else if (button.name=="abort"){
+                button.addEventListener("click", function(e){
+                    button.className="btn btn-danger disabled"
+                    timeLeft=30;
+                    clearTimeout(timeId);
+                    document.getElementsByName("Timer")[0].style.display="none"
+
+                    //document.getElementsByName("execute")[0].className = "btn btn-success active"
+                });
+            }
+
+            else{
+                button.addEventListener("click", function(e) {
+                    // remove emerge stop from this group
+                    // from submitting our form (if we have one
+                    e.preventDefault();
+                    var clickedButton = e.target;
+                    //var command = clickedButton.val
+                    //alert(clickedButton.name);
+                    //console.log(document.getElementsByName("execute").className)
+                    document.getElementsByName("execute")[0].className = "btn btn-success active"
+                    //console.log(document.getElementsByName("execute").className)
+                });
+            }
+
+        }
     });
-
-var timeLeft = 30
-var timer = document.getElementsByName("Timer")[0];
-var timeId
-
-document.getElementsByName("Timer")[0].style.display="none"
-function countdown(){
-    var secondsSpan = timer.querySelector('.seconds');
-   if (timeLeft==0){
-        document.getElementsByName("Timer")[0].style.display="none"
-        clearTimeout(timeId);
-        timeLeft=30;
-        socket.emit('my event', {data:'Im using sockets!'});
-//Do a thing here
-    }else{
-        secondsSpan.innerHTML=timeLeft
-        timeLeft--;
-
-    }
-}
-
-// Only run what comes next *after* the page has loaded
-addEventListener("DOMContentLoaded", function() {
-    var commandButtons = document.querySelectorAll("button");
-
-    for (var i=0, l=commandButtons.length; i<l; i++) {
-        var button = commandButtons[i];
-        // For each button, listen for the "click" event
-
-        if (button.name=="execute"){
-            //console.log(button)
-            button.addEventListener("click",function(e){
-                clearTimeout(timeId);
-                timeLeft=30;
-                button.className="btn btn-success disabled"
-                document.getElementsByName("execute")[0].className="btn btn-success disabled"
-                document.getElementsByName("abort")[0].className="btn btn-danger active"
-                document.getElementsByName("Timer")[0].style.display="inline"
-                timeId=setInterval(countdown, 1000);
-            });
-        } 
-        else if (button.name=="abort"){
-            button.addEventListener("click", function(e){
-                button.className="btn btn-danger disabled"
-                timeLeft=30;
-                clearTimeout(timeId);
-                document.getElementsByName("Timer")[0].style.display="none"
-            
-                //document.getElementsByName("execute")[0].className = "btn btn-success active"
-            });
-        }
-
-        else{
-            button.addEventListener("click", function(e) {
-                // remove emerge stop from this group
-                // from submitting our form (if we have one
-                e.preventDefault();
-                var clickedButton = e.target;
-                //var command = clickedButton.val
-                //alert(clickedButton.name);
-                //console.log(document.getElementsByName("execute").className)
-                document.getElementsByName("execute")[0].className = "btn btn-success active"
-                //console.log(document.getElementsByName("execute").className)
-            });
-        }
-   
-    }
-});
 
 </script>
 
@@ -184,5 +184,3 @@ addEventListener("DOMContentLoaded", function() {
 
 
  TODO: add javascript for buttons maybe user angular?
-
-
