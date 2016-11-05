@@ -40,15 +40,11 @@ actions = {"clean":0,"bottle":0,"brew":1}
 #### routes ####
 ################
 #print admin_permission
-@home_blueprint.route('/index/', methods=['GET', 'POST'])
+@home_blueprint.route('/', methods=['GET', 'POST'])
 @login_required
 @admin_permission.require(http_exception=403)
 def home():
 
-    users = db.session.query(User).all()
-
-    for user in users:
-        print user
 
     error = None
     info = db.session.query(CarboyStates).order_by(CarboyStates.carboy).all()
