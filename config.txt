@@ -1,0 +1,6 @@
+APP_SETTINGS=config.DevelopmentConfig
+
+DATABASE_URL = postgresql:///beershed_dev
+
+
+DATABASE_URL='postgres://kuqajzyeynvfaj:z3_iCxmx4xiPKsrCXgZJ54aw9A@ec2-54-243-47-46.compute-1.amazonaws.com:5432/d6ldu123krurig'
