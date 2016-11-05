@@ -1,18 +1,294 @@
 {% extends "base.html" %}
 {% block content %}
-
-<h1>Welcome to BeerShed!</h1>
-<p> BeerShed is a picobrewery side project by Melvie Tarr and Emmanuel Jordan. This is web app is used for monitoring and remote access purposes. </p>
-<br>
-<p>Click <a href="/logout">here</a> to logout.</p>
+<div class="jumbotron">
+  <h1>BeerShed</h1>
+  <p>Welcome to BeerShed.
+      BeerShed is an on going project that will eventually automated a small scale brewing process. This webapp was built as a means to control the brewery from anywhere via the internet (and practice my Python).</p>
+      <p>
+      The system works by having an arduino control 32 solenoids, 1 pump, and a motor to brew, bottle, and transfer beer throughout the fermentation process. The arduino is issued commands by a Raspberry Pi over serial (This will eventually be hosted on an RPi but here for now), and the Rpi receives commands from this web app. </p>
+      <p>
+      Currently, no hardware is hooked up as we are still in the design phase of our pump but feel free to play with the app, you won't break anything!</p>
+</div>
 
 <!-- All posts -->
-<h3>Brews:</h3>
-{% for info  in info %}
-  <strong>Carboy:</strong> {{ info.carboy }} <br>
-  <strong>Status:</strong> {{ info.status }} <br>
-  <strong>Temperature:</strong> {{ info.temperature }} <br>
-<br>
-{% endfor %}
 
+<div class ="row", id ="INFO">
+  <div class ="col-md-5">
+    <h2 class = "sub-header">  Brew Status:</h2>
+  </div>
+  <div class = "col-md-5">
+    <button type="button" class="btn btn-danger btn-lg text-center" name="emerg" value = "STOP,0"> Emergency Stop </button>
+  </div>
+  <div  class ="col-md-7">
+    <p class ="text-right">Shed Temperature:  <span id="weather"></span> </p>
+  </div>
+    <div class ="row" >
+     {% for info in info %}
+     <div class ="col-md-4">
+       <table class = "table">
+         <thead>
+           <tr>
+             <th class="col-md-6">Carboy {{info.carboy}}
+             </th>
+           </tr>
+         </thead>
+         <tbody>
+           <tr>
+             <td> Status:      </td>
+             <td>{{info.status}}</td>
+           </tr>
+           <tr>
+             <td> Brew Date:      </td>
+             <td> TBD </td>
+           </tr>
+           <tr>
+             <td> Temperature:       </td>
+             <td>{{info.temperature}}</td>
+           </tr>
+           <tr>
+             <td> Fermentation Cycle:      </td>
+             <td> Primary/Secondary </td>
+           </tr>
+           <tr>
+             <td> Time Remaining:       </td>
+             <td> TBD </td>
+           </tr>
+         </tbody>
+       </table>
+     </div>
+      {% endfor %}
+  </div>
+</div>
+ <div class ="row" >
+     {% for carboy in carboys %}
+        <div class = "col-md-4 text-center"><button class="btn btn-command", value="{{carboy}}", name = "toggle", style="display:none">Select To Transfer </button>
+             <h3 class = "sub-header"></h3>
+             <div class="btn-group">
+                 {% for label, command in commands.items() %}
+                    {% if label != "Stop"%}
+                    <button class="btn btn-primary command-{{ command }}" value="{{command}},{{carboy}}" name= "{{command}}">
+                     {{ label }}</button>
+                     {%endif%}
+                {% endfor %}
+             </div>
+        </div>
+
+     {% endfor %}
+ </div>
+ <div class = "row">
+   <h1></h1>
+ </div>
+ <div class = "row text-center">
+   <div id="inputbutts" class = "btn-group">
+     <h1></h1>
+     <button type="submit" class="btn btn-success disabled" value="Execute" name="execute">Execute</button>
+     <button type="button" class="btn btn-danger disabled" value="Abort" name="abort">Abort</button>
+   </div>
+ </div>
+
+ <div class = "row text-center" id="countdown-clock" style="display:none">
+   <div name ="Timer"  class="smalltext">Executing command in: <span class="seconds"></span>
+   </div>
+ </div>
+ <div class = "row text-center">
+   <h1></h1>
+      <p >Click <a href="/logout">here</a> to logout.</p>
+  </div>
+
+
+<script type="text/javascript " charset="utf-8">
+
+//var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+var timeLeft = 5
+var timer = document.getElementsByName("Timer")[0];
+var timeId
+var execute_button =  document.getElementsByName("execute")[0];
+var abort_button =  document.getElementsByName("abort")[0];
+var emerg_button =  document.getElementsByName("emerg")[0];
+var data
+var transferButtons = document.getElementsByName("transfer")
+var toggleButtons  = document.getElementsByName("toggle")
+var clocktext = document.getElementById('countdown-clock')
+var clicked_Val
+timer.style.display="none";
+
+function refresh(){
+    $.get(document.URL, function(info) {
+        $('#INFO').replaceWith($(info).find("#INFO"));
+    });
+    togglies();
+    // $('#INFO').load(document.URL +  ' #INFO');
+    weather();
+    //toggleoff();
+}
+
+
+function countdown(){
+    var secondsSpan = timer.querySelector('.seconds');
+    clocktext.style.display="inherit"
+    if(timeLeft==0){
+        timer.style.display="none";
+        abort_button.className="btn btn-danger disabled"
+        clearTimeout(timeId);
+        timeLeft=5;
+        //Makes GET request to server with out reloading page
+        var request = new XMLHttpRequest();
+        request.onload = function(){
+            alert(request.responseText);
+            refresh();
+
+
+        };
+        request.open("GET","/"+data, true);
+        request.send();
+
+    }else{
+        secondsSpan.innerHTML=timeLeft
+        timeLeft--;
+
+
+    }
+}
+
+
+
+function toggleoff(){
+    for (i=0, l=toggleButtons.length; i<l;i++){
+        toggleButtons[i].style.display ="none"
+
+    }
+}
+
+
+function toggleOn(){
+    for (i=0, l=toggleButtons.length; i<l;i++){
+        toggleButtons[i].style.display ="inline"
+        toggleButtons[i].className = "btn btn-command active"
+    }
+
+}
+
+function togglies(){
+    for (i=0, l=toggleButtons.length; i<l;i++){
+        var b = toggleButtons[i]
+        b.addEventListener("click", function(e) {
+            e.preventDefault();
+            var clickedButton = e.target;
+            clicked_Val = clickedButton.value;
+
+            for (j=1, l=toggleButtons.length; j<=l;j++){
+                if (clicked_Val ===toggleButtons[j-1].value){
+                    //this is a stupid line of code
+                    clickedButton.className = "btn btn-success active"
+                }else if (String(data).slice(-1)==j){toggleButtons[j-1].className="btn btn-command disabled"}
+                else{toggleButtons[j-1].className="btn btn-command active"}
+            }
+
+            execute_button.className = "btn btn-success active"
+        });
+    }
+}
+
+// Only run what comes next *after* the page has loaded
+document.addEventListener("DOMContentLoaded", function() {
+
+    togglies();
+    toggleoff();
+    var commandButtons = document.querySelectorAll("button");
+    execute_button.addEventListener("click", function(e){
+        data= data + ","+clicked_Val
+        clearTimeout(timeId);
+        timeLeft=5;
+        execute_button.className="btn btn-success disabled"
+        execute_button.className="btn btn-success disabled"
+        abort_button.className="btn btn-danger active"
+        timeId=setInterval(countdown, 1000);
+        timer.style.display="inline"
+        toggleoff();
+
+    });
+
+    abort_button.addEventListener("click", function(e){
+        data ={}
+        abort_button.className="btn btn-danger disabled"
+        timeLeft=5;
+        clearTimeout(timeId);
+        timer.style.display="none"
+
+        //data ={}
+        //document.getElementsByName("execute")[0].className = "btn btn-success active"
+    });
+
+    emerg_button.addEventListener("click", function(e){
+        var emerg = e.target;
+        data = emerg.value;
+        timeLeft=5;
+        clearTimeout(timeId);
+        timeId=setInterval(countdown, 10);
+        //data ={}
+        //document.getElementsByName("execute")[0].className = "btn btn-success active"
+    });
+
+    for (var i=0, l=commandButtons.length; i<l-2; i++) {
+        var b = commandButtons[i];
+
+        if(b.name == "transfer"){
+
+            b.addEventListener("click", function(e) {
+                toggleoff();
+                e.preventDefault();
+                var clickedButton = e.target;
+                var f_carboy = clickedButton.value.slice(-1);
+
+                for (i=1, l=transferButtons.length; i<=l;i++){
+                    if (String(i) == f_carboy){
+                        toggleButtons[i-1].style="display:inline"
+                        toggleButtons[i-1].className = "btn btn-command disabled"
+
+                    } else{
+                        toggleButtons[i-1].style="display:inline"
+                        toggleButtons[i-1].className = "btn btn-command active"
+                    }
+                }
+
+                data = clickedButton.value
+
+                //execute_button.className = "btn btn-success active"
+            });
+        }
+        else if (b.name != 'abort' && b.name !='execute' && b.name !='emerg'&& b.name != "toggle"){
+            b.addEventListener("click", function(e) {
+                // When a click happens, stop the button
+                // from submitting our form (if we have one
+                toggleoff();
+                e.preventDefault();
+                var clickedButton = e.target;
+                data = clickedButton.value;
+                execute_button.className = "btn btn-success active"
+                //console.log(document.getElementsByName("execute").className)
+            });
+        }
+
+    }
+});
+function weather(){
+    $.simpleWeather({
+      location: 'North Vancouver, Canada',
+      woeid: '',
+      unit: 'C',
+      success: function(weather) {
+        html = weather.temp+'&deg;'+weather.units.temp;
+
+        $("#weather").html(html);
+      },
+      error: function(error) {
+        $("#weather").html('<p>'+error+'</p>');
+      }
+    });
+}
+$(document).ready(function() {
+    weather();
+});
+</script>
 {% endblock %}

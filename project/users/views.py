@@ -59,8 +59,4 @@ def logout():
 
     identity_changed.send(current_app._get_current_object(),identity=AnonymousIdentity())
     flash('You were logged out.')
-    return redirect(url_for('home.welcome'))
-
-
-
-
+    return redirect(url_for('users.login'))

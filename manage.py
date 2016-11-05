@@ -2,9 +2,10 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 import unittest
 import os
-import coverage 
+import coverage
 
 from project import app, db
+#socketio
 
 app.config.from_object(os.environ['APP_SETTINGS'])
 migrate = Migrate(app, db)
@@ -34,12 +35,11 @@ def cov():
     cov.html_report(directory=covdir)
     cov.erase()
 
-@manager.command
-def run():
-    socketio.run(flask.current_app,
-                 host='127.0.0.1',
-                 port=5000,
-                 user_reloader=False)
+# @manager.command
+# def run():
+#     socketio.run(app,
+#                  host='127.0.0.1',
+#                  port=5001)
 
 if __name__ == '__main__':
     manager.run()

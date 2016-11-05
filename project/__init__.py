@@ -29,14 +29,16 @@ db = SQLAlchemy(app)
 principals = Principal(app)
 principals._init_app(app)
 
-socketio=SocketIO(app)
+# socketio=SocketIO(app)
 
 from project.users.views import users_blueprint
 from project.home.views import home_blueprint
+from project.home.views import guest_blueprint
 
 # register our blueprints
 app.register_blueprint(users_blueprint)
 app.register_blueprint(home_blueprint)
+app.register_blueprint(guest_blueprint)
 
 
 from models import User
@@ -47,6 +49,3 @@ login_manager.login_view = "users.login"
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.filter(User.id == int(user_id)).first()
-
-
-
