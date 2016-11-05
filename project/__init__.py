@@ -7,7 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_principal import Principal
-from flask_socketio import SocketIO
 import os
 
 
@@ -28,8 +27,6 @@ db = SQLAlchemy(app)
 
 principals = Principal(app)
 principals._init_app(app)
-
-# socketio=SocketIO(app)
 
 from project.users.views import users_blueprint
 from project.home.views import home_blueprint

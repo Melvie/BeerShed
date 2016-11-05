@@ -4,7 +4,6 @@
 #################
 import sys
 from project import db, app
-#socketio #pragma: no cover
 from project.models import CarboyStates, User #pragma: no cover
 from flask import flash, redirect, url_for, render_template, Blueprint, request #pragma: no cover
 from forms import ButtonForm #pragma: no cover

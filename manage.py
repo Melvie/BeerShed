@@ -35,11 +35,6 @@ def cov():
     cov.html_report(directory=covdir)
     cov.erase()
 
-# @manager.command
-# def run():
-#     socketio.run(app,
-#                  host='127.0.0.1',
-#                  port=5001)
 
 if __name__ == '__main__':
     manager.run()
