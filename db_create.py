@@ -11,9 +11,9 @@ db.create_all()
 
 
 ## instert
-db.session.add(CarboyStates(1, "Empty",20))
-db.session.add(CarboyStates(2,"Empty",20))
-db.session.add(CarboyStates(3, "Empty",20))
+db.session.add(CarboyStates(1, "Clean",20))
+db.session.add(CarboyStates(2,"Clean",20))
+db.session.add(CarboyStates(3, "Clean",20))
 
 ## commit the changes
 db.session.commit()
